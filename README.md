@@ -9,6 +9,7 @@ The core requirements for this app:
 - Shared memes are saved in memory and appear on the landing page.
 - Using a tab bar at the bottom of the landing page, the user may select to view the shared memes in a list or grid.
 - Tapping a shared meme on the landing page takes the user to a detail view where they can get a closer look at the meme.
+- The UI must adapt to the various iOS device screen sizes and to device orientation changes.
 
 This version of the app fulfils those requirements and adds some features:
 - The classic image meme font, Impact, is bundled with the app and used in the meme editor.
