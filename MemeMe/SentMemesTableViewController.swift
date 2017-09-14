@@ -12,11 +12,11 @@ class SentMemesTableViewController: UIViewController, UITableViewDelegate, UITab
 	// MARK: Constants
 	
 	private struct Constants {
-		static let CellIdentifier = "MemeCell"
-        static let CellImageTag = 30;
-        static let CellTopTextTag = 31;
-        static let CellBottomTextTag = 32;
-        static let RowHeight = 120.0;
+		static let cellIdentifier = "MemeCell"
+        static let cellImageTag = 30;
+        static let cellTopTextTag = 31;
+        static let cellBottomTextTag = 32;
+        static let rowHeight = 120.0;
 	}
 	
     // MARK: Outlets
@@ -47,12 +47,12 @@ class SentMemesTableViewController: UIViewController, UITableViewDelegate, UITab
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: Constants.CellIdentifier, for: indexPath)
+		let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellIdentifier, for: indexPath)
 		let meme = MemeStore.instance.get(fromIndex: indexPath.row)
         
-        let imageView = cell.viewWithTag(Constants.CellImageTag) as! UIImageView
-        let topText = cell.viewWithTag(Constants.CellTopTextTag) as!UILabel
-        let bottomText = cell.viewWithTag(Constants.CellBottomTextTag) as! UILabel
+        let imageView = cell.viewWithTag(Constants.cellImageTag) as! UIImageView
+        let topText = cell.viewWithTag(Constants.cellTopTextTag) as!UILabel
+        let bottomText = cell.viewWithTag(Constants.cellBottomTextTag) as! UILabel
         
         imageView.image = meme?.memedImage
         topText.text = meme?.top
@@ -79,11 +79,11 @@ class SentMemesTableViewController: UIViewController, UITableViewDelegate, UITab
     
     //set row height
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return CGFloat(Constants.RowHeight)
+        return CGFloat(Constants.rowHeight)
     }
 	
     //go to meme detail view on row tap
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: MemeDetailSeguePreparer.MemeDetailSegueIdentifier, sender: indexPath.row)
+        performSegue(withIdentifier: MemeDetailSeguePreparer.memeDetailSegueIdentifier, sender: indexPath.row)
 	}
 }

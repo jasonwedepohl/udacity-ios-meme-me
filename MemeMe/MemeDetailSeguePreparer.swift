@@ -9,10 +9,10 @@
 import UIKit
 
 class MemeDetailSeguePreparer {
-    static let MemeDetailSegueIdentifier = "MemeDetailSegue"
+    static let memeDetailSegueIdentifier = "MemeDetailSegue"
     
     static func prepare(_ segue: UIStoryboardSegue, _ sender: Any?, _ viewController: UIViewController) {
-        if segue.identifier == MemeDetailSegueIdentifier {
+        if segue.identifier == memeDetailSegueIdentifier {
             guard let memeDetailController = segue.destination as? MemeDetailViewController else {
                 print("Expected segue destination to be MemeDetailViewController but was \(String(describing: segue.destination))")
                 return

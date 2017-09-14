@@ -163,7 +163,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="MdJ-Lj-y8v" userLabel="Meme">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="MdJ-Lj-y8v" userLabel="Meme">
                                 <rect key="frame" x="-16" y="64" width="352" height="460"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </imageView>
@@ -231,6 +231,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="bottomField" destination="FsF-yG-44n" id="R9e-Qn-RVj"/>
+                        <outlet property="bottomTextBottomConstraint" destination="Mv5-Uw-gEJ" id="qKc-Eo-NjW"/>
                         <outlet property="cameraButton" destination="mlG-yq-Ask" id="VQ3-iQ-ggS"/>
                         <outlet property="cancelButton" destination="Ise-XK-64R" id="hzU-A6-IKh"/>
                         <outlet property="galleryButton" destination="TxA-Gl-abs" id="nVE-at-RQN"/>

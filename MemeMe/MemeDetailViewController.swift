@@ -11,7 +11,7 @@ class MemeDetailViewController: UIViewController {
     
     //MARK: Constants
     
-    let MemeEditorSegueIdentifier = "MemeEditorSegue"
+    let memeEditorSegueIdentifier = "MemeEditorSegue"
     
     //MARK: Properties
     
@@ -24,7 +24,7 @@ class MemeDetailViewController: UIViewController {
     //MARK: Actions
     
     @IBAction func edit(_ sender: Any) {
-        performSegue(withIdentifier: MemeEditorSegueIdentifier, sender: nil)
+        performSegue(withIdentifier: memeEditorSegueIdentifier, sender: nil)
     }
     
     //MARK: UIViewController overrides
@@ -35,7 +35,7 @@ class MemeDetailViewController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == MemeEditorSegueIdentifier {
+        if segue.identifier == memeEditorSegueIdentifier {
             guard let editorNavController = segue.destination as? UINavigationController else {
                 print("Expected segue destination to be UINavigationController but was \(String(describing: segue.destination))")
                 return

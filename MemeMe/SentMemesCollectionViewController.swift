@@ -12,10 +12,10 @@ class SentMemesCollectionViewController: UIViewController, UICollectionViewDataS
 	// MARK: Constants
 	
 	private struct Constants {
-		static let CellIdentifier = "MemeCell"
-        static let CellsPerRowInPortrait:CGFloat = 3;
-        static let CellsPerRowInLandscape:CGFloat = 5;
-        static let CellSpacing:CGFloat = 4;
+		static let cellIdentifier = "MemeCell"
+        static let cellsPerRowInPortrait:CGFloat = 3;
+        static let cellsPerRowInLandscape:CGFloat = 5;
+        static let cellSpacing:CGFloat = 4;
 	}
 	
 	// MARK: Outlets
@@ -73,13 +73,13 @@ class SentMemesCollectionViewController: UIViewController, UICollectionViewDataS
         let viewHeight = view.frame.height
         let realViewWidth = (isPortrait && viewWidth > viewHeight) || (!isPortrait && viewWidth < viewHeight) ? viewHeight : viewWidth
         
-        let itemsPerRow:CGFloat = isPortrait ? Constants.CellsPerRowInPortrait : Constants.CellsPerRowInLandscape
+        let itemsPerRow:CGFloat = isPortrait ? Constants.cellsPerRowInPortrait : Constants.cellsPerRowInLandscape
         let numberOfSpaces:CGFloat = 2 * (itemsPerRow - 1)
         let marginSpace:CGFloat = memeCollectionView.layoutMargins.left + memeCollectionView.layoutMargins.right
-        let dimension = (realViewWidth - marginSpace - (numberOfSpaces * Constants.CellSpacing)) / itemsPerRow
+        let dimension = (realViewWidth - marginSpace - (numberOfSpaces * Constants.cellSpacing)) / itemsPerRow
         
-        flowLayout.minimumInteritemSpacing = Constants.CellSpacing
-        flowLayout.minimumLineSpacing = Constants.CellSpacing
+        flowLayout.minimumInteritemSpacing = Constants.cellSpacing
+        flowLayout.minimumLineSpacing = Constants.cellSpacing
         flowLayout.itemSize = CGSize(width: dimension, height: dimension)
     }
 	
@@ -90,7 +90,7 @@ class SentMemesCollectionViewController: UIViewController, UICollectionViewDataS
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.CellIdentifier, for: indexPath) as! MemeCollectionViewCell
+		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.cellIdentifier, for: indexPath) as! MemeCollectionViewCell
 		let meme = MemeStore.instance.get(fromIndex: indexPath.row)!
 		cell.imageView?.image = meme.memedImage
         
@@ -106,7 +106,7 @@ class SentMemesCollectionViewController: UIViewController, UICollectionViewDataS
     // MARK: UICollectionViewDelegate
 	
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        performSegue(withIdentifier: MemeDetailSeguePreparer.MemeDetailSegueIdentifier, sender: indexPath.row)
+        performSegue(withIdentifier: MemeDetailSeguePreparer.memeDetailSegueIdentifier, sender: indexPath.row)
 	}
 }
 

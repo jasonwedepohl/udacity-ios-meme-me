@@ -12,11 +12,12 @@ class MemeEditorViewController: UIViewController {
 	// MARK: Constants
 	
 	struct Constants {
-		static let DefaultTopText = "TOP"
-		static let DefaultBottomText = "BOTTOM"
-		static let TagTopText = 0
-		static let TagBottomText = 1
-		static let MemeTextAttributes:[String:Any] = [
+		static let defaultTopText = "TOP"
+		static let defaultBottomText = "BOTTOM"
+		static let tagTopText = 0
+		static let tagBottomText = 1
+        static let bottomTextBottomConstraintIdentifier = "BottomTextBottomConstraint"
+		static let memeTextAttributes:[String:Any] = [
 			NSStrokeColorAttributeName: UIColor.black,
 			NSForegroundColorAttributeName: UIColor.white,
 			NSFontAttributeName: UIFont(name: "Impact", size: getTextFontSize())!,
@@ -48,21 +49,16 @@ class MemeEditorViewController: UIViewController {
 	@IBOutlet var cameraButton:UIBarButtonItem!
 	@IBOutlet var galleryButton:UIBarButtonItem!
     @IBOutlet var toolbar: UIToolbar!
+    @IBOutlet var bottomTextBottomConstraint: NSLayoutConstraint!
 	
 	// MARK: Actions
 	
 	@IBAction func pickAnImageFromAlbum(_ sender: Any) {
-		let imagePicker = UIImagePickerController()
-		imagePicker.delegate = self
-		imagePicker.sourceType = .photoLibrary
-		present(imagePicker, animated: true, completion: nil)
+        pickImage(from: .photoLibrary)
 	}
 	
 	@IBAction func pickAnImageFromCamera(_ sender: Any) {
-		let imagePicker = UIImagePickerController()
-		imagePicker.delegate = self
-		imagePicker.sourceType = .camera
-		present(imagePicker, animated: true, completion: nil)
+        pickImage(from: .camera)
 	}
     
     @IBAction func share(_ sender: Any) {
@@ -72,6 +68,13 @@ class MemeEditorViewController: UIViewController {
     @IBAction func cancel(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
+    
+    private func pickImage(from source: UIImagePickerControllerSourceType) {
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.sourceType = source
+        present(imagePicker, animated: true, completion: nil)
+    }
 	
 	// MARK: UIViewController overrides
     
@@ -80,8 +83,8 @@ class MemeEditorViewController: UIViewController {
         if editingMemeIndex == nil {
             //we are adding a new meme (+ was tapped from sent memes view)
             
-            topField.text = Constants.DefaultTopText
-            bottomField.text = Constants.DefaultBottomText
+            topField.text = Constants.defaultTopText
+            bottomField.text = Constants.defaultBottomText
             shareButton.isEnabled = false
         } else {
             //we are reusing an existing meme (edit was tapped from meme detail view)
@@ -100,8 +103,8 @@ class MemeEditorViewController: UIViewController {
             toolbar.isHidden = true
         }
         
-        configureTextField(topField, withTag: Constants.TagTopText)
-        configureTextField(bottomField, withTag: Constants.TagBottomText)
+        configureTextField(topField, withTag: Constants.tagTopText)
+        configureTextField(bottomField, withTag: Constants.tagBottomText)
     }
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -121,7 +124,7 @@ class MemeEditorViewController: UIViewController {
 	private func configureTextField(_ textField: UITextField, withTag tag: Int) {
 		textField.delegate = self
 		textField.tag = tag
-		textField.defaultTextAttributes = Constants.MemeTextAttributes
+		textField.defaultTextAttributes = Constants.memeTextAttributes
         textField.textAlignment = .center
         textField.autocapitalizationType = .allCharacters
 	}
@@ -167,9 +170,7 @@ extension MemeEditorViewController
 	
 	private func generateMemedImage() -> UIImage {
 		
-		//hide toolbar and navbar
-        navigationController?.setNavigationBarHidden(true, animated: false)
-        toolbar.isHidden = true
+        setToolbarAndNavBarVisibility(isHidden: true)
         
         //temporarily adjust image and bottom text field frames to fill toolbar area
         let tempImageViewFrame = imageView.frame
@@ -186,9 +187,7 @@ extension MemeEditorViewController
 		let memedImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
 		UIGraphicsEndImageContext()
 		
-		//show toolbar and navbar
-        navigationController?.setNavigationBarHidden(false, animated: false)
-        toolbar.isHidden = editingMemeIndex != nil //don't show toolbar if editing, see viewDidLoad() for explanation
+        setToolbarAndNavBarVisibility(isHidden: false)
         
         //reset image and bottom text field frames
         imageView.frame = tempImageViewFrame
@@ -197,6 +196,11 @@ extension MemeEditorViewController
 		
 		return memedImage
 	}
+    
+    private func setToolbarAndNavBarVisibility(isHidden: Bool) {
+        navigationController?.setNavigationBarHidden(isHidden, animated: false)
+        toolbar.isHidden = isHidden || editingMemeIndex != 0 //don't show toolbar if editing, see viewDidLoad() for explanation
+    }
 }
 
 //MARK: UIImagePickerControllerDelegate extension
@@ -223,8 +227,8 @@ extension MemeEditorViewController : UITextFieldDelegate {
         
         //wipe text if it is the default "TOP" or "BOTTOM" text
         
-		if (textField.text! == Constants.DefaultTopText && textField.tag == Constants.TagTopText) ||
-            (textField.text! == Constants.DefaultBottomText && textField.tag == Constants.TagBottomText) {
+		if (textField.text! == Constants.defaultTopText && textField.tag == Constants.tagTopText) ||
+            (textField.text! == Constants.defaultBottomText && textField.tag == Constants.tagBottomText) {
 			textField.text = ""
 		}
 	}
@@ -234,7 +238,7 @@ extension MemeEditorViewController : UITextFieldDelegate {
         //if text field is empty, replace it with default top/bottom text so user has something visible to tap on
         
 		if textField.text!.trimmingCharacters(in: CharacterSet.whitespaces).isEmpty {
-			textField.text = textField.tag == Constants.TagTopText ? Constants.DefaultTopText : Constants.DefaultBottomText
+			textField.text = textField.tag == Constants.tagTopText ? Constants.defaultTopText : Constants.defaultBottomText
 		}
 		textField.resignFirstResponder()
 		return true
@@ -262,7 +266,13 @@ extension MemeEditorViewController
 		if topField.isEditing {
 			return
 		}
-		view.frame.origin.y -= getKeyboardHeight(notification)
+        
+        /*
+            On devices smaller than iPhone 6, the bottom text is actually moved right up under the nav bar in landscape mode.
+            To prevent this, move the view up by (keyboard height - space between bottom text and view bottom)
+        */
+        
+		view.frame.origin.y -= getKeyboardHeight(notification) - abs(bottomTextBottomConstraint.constant)
 	}
 	
 	func keyboardWillHide(_ notification:Notification) {
